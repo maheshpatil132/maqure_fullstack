@@ -13,7 +13,7 @@ exports.createbuyer = catchaysnc(async(req,res,next)=>{
 
 // getbuyer list
 exports.getbuyers = catchaysnc(async(req,res,next)=>{
-    const buyers = await db.find({role:'buyer'})
+    const buyers = await db.find()
     res.json({
         sucess:true,
         buyers
