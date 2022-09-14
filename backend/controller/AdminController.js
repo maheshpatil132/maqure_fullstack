@@ -66,7 +66,7 @@ exports.aproveseller = catchaysnc(async(req,res,next)=>{
 // reject seller
 exports.rejectseller = catchaysnc(async(req,res,next)=>{
   const {id} = req.params
-  const seller = await SellerModel.findByIdAndRemove(id,{Aprroved:true},{new:true})
+  const seller = await SellerModel.findByIdAndRemove(id)
   if(!seller){
     return next(new Errorhandler("seller not exist",404))
   }
@@ -124,14 +124,14 @@ exports.getallsellerrequest = catchaysnc(async (req,res,next)=>{
 // get all add prod request
 exports.getalladdprodrequest = catchaysnc(async (req,res,next)=>{
   const email = "hiren@gmail.com"
-  const admin = await db.findOne({email:email}).populate('AddprodReq.seller').populate('AddprodReq.product')
-  if(!admin){
-    return next(new Errorhandler('admin not found',404))
+  const addrequs = await db.findOne({email:email},{Addreqs:1}).populate('AddprodReq.seller').populate('AddprodReq.product')
+  if(!addrequs){
+    return next(new Errorhandler('something Went Wrong',404))
   }
-  const Addreqs = await admin.AddprodReq
   res.status(200).json({
     sucess:true,
-    Addreqs
+    addrequs
   })
 })
+
 

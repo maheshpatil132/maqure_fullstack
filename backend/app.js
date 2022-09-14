@@ -4,12 +4,13 @@ const body = require('body-parser');
 const http = require('http');
 const { Server } = require('socket.io')
 const connectDatabase = require('./configure/database');
-const { newbuyer, GetBuyers, GetSingleBuyer, LoginBuyer, LogoutBuyer, UpdateBuyer } = require('./routes/BuyerRoutes');
+const { newbuyer, GetBuyers, GetSingleBuyer, LoginBuyer, LogoutBuyer, UpdateBuyer, DeleteBuyer } = require('./routes/BuyerRoutes');
 const { CreateProduct, GetallProduct, GetSingleProduct, UpdateProduct, DeleteProduct } = require('./routes/ProductRoutes');
 const error = require('./middleware/error');
 const cookieParser = require("cookie-parser");
 const { CreateSeller, SignUpSeller, LoginSeller, DeleteSeller, AddProdRequest } = require('./routes/sellerRoutes');
 const { CreateAdmin, LoginAdmin, ApproveSeller, RejectSeller, AddProduct, GetAllSellerRequest, GetAllProdRequest } = require('./routes/AdminRoutes');
+const { CreateOrder, GetAllOrder, GetSingleOrder, AdminUpdates, BuyerUpdates, SellerUpdates, GetAllQuotes, GetQuote } = require('./routes/OrderRoutes');
 
 
 
@@ -29,7 +30,7 @@ app.use(body.urlencoded({ extended: false }))
 app.use(body.json())
 express.json()
 
-dotenv.config({path:'./configure/app.env'})
+dotenv.config({ path: './configure/app.env' })
 const PORT = process.env.PORT
 
 
@@ -49,7 +50,7 @@ app.use(GetSingleBuyer)
 app.use(LoginBuyer)
 app.use(LogoutBuyer)
 app.use(UpdateBuyer)
-
+app.use(DeleteBuyer)
 
 // seller's Routes
 app.use(CreateSeller)
@@ -69,6 +70,16 @@ app.use(GetAllSellerRequest)
 app.use(GetAllProdRequest)
 
 
+// order routes
+app.use(CreateOrder)
+app.use(GetAllOrder)
+app.use(GetSingleOrder)
+app.use(AdminUpdates)
+app.use(BuyerUpdates)
+app.use(SellerUpdates)
+app.use(GetAllQuotes)
+app.use(GetQuote)
+
 
 app.use(error)
-connectDatabase(app,PORT)
+connectDatabase(app, PORT)

@@ -19,4 +19,4 @@ const DeleteBuyer =  app.delete('/buyer/:id', isAdmin ,autherizesrole('admin'),d
 
 
 
-module.exports = {newbuyer , GetBuyers , GetSingleBuyer , LoginBuyer , LogoutBuyer , UpdateBuyer}
+module.exports = {newbuyer , GetBuyers , GetSingleBuyer , LoginBuyer , LogoutBuyer , UpdateBuyer , DeleteBuyer}
