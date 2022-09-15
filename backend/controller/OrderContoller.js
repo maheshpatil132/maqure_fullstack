@@ -56,7 +56,7 @@ exports.buyerupdates = catchaysnc(async (req, res, next) => {
 
 })
 
-// 3. update bids == seller
+// 3. create/add bids == seller
 exports.sellerupdates = catchaysnc(async (req, res, next) => {
 
     const { price } = req.body
@@ -81,7 +81,7 @@ exports.sellerupdates = catchaysnc(async (req, res, next) => {
             }
         })
     } else {
-        product.reviews.push(data)
+        order.bids.push(data)
     }
 
     await order.save()
@@ -128,7 +128,7 @@ exports.getallquoate = catchaysnc(async (req, res, next) => {
     const bids = await quotes.bids
     res.status(200).json({
         success: true,
-        quotes
+        bids
     })
 
 })
@@ -152,10 +152,27 @@ exports.getquote = catchaysnc(async (req, res, next) => {
 
 
 // admin have selected
+exports.addminaccepted = catchaysnc(async(req,res,next)=>{
+  const { sellerId , finalprice}= req.body
+  const order = await db.findByIdAndUpdate(id,{winner:{
+    seller:sellerId,
+    price:finalprice
+  }, status:'in transit'})
+  await order.save()
 
-// accept order
-exports.acceptorder = catchaysnc(async(req,res,next)=>{
+  if(!order){
+    return next(new Errorhandler('order not exist',404))
+  }
 
+  res.status(200).json({
+    success:true,
+    order
+  })
+})
+
+//buyer accept order
+exports.buyeracceptorder = catchaysnc(async(req,res,next)=>{
+  const { orderId , finalprice , } = req.body
 })
 
 

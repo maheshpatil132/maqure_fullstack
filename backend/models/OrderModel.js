@@ -14,7 +14,7 @@ const OrderModel = mongoose.Schema({
    },
    winner:[{
       type: mongoose.SchemaTypes.ObjectId,
-      ref:'seller',
+      ref:'order.bid',
       price:{
          type:Number,
       }
@@ -47,7 +47,8 @@ const OrderModel = mongoose.Schema({
    }
    ],
    finalPrice:{
-      type:Number
+      type:Number,
+      default:0
    },
    deal:{
       type:Boolean,
