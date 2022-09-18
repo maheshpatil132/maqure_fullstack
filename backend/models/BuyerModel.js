@@ -28,7 +28,10 @@ const BuyerModel = mongoose.Schema({
       default:'buyer'
     },
     bids:[
-        
+        {
+          type:mongoose.SchemaTypes.ObjectId,
+          ref:'order'
+        }
     ],
     date: {
         type: Date,

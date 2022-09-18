@@ -2,14 +2,15 @@ const express = require('express');
 const dotenv = require('dotenv');
 const body = require('body-parser');
 const http = require('http');
+const cors = require('cors')
 const { Server } = require('socket.io')
 const connectDatabase = require('./configure/database');
-const { newbuyer, GetBuyers, GetSingleBuyer, LoginBuyer, LogoutBuyer, UpdateBuyer, DeleteBuyer } = require('./routes/BuyerRoutes');
+const { newbuyer, GetBuyers, GetSingleBuyer, LoginBuyer, LogoutBuyer, UpdateBuyer, DeleteBuyer, GetBuyerBids } = require('./routes/BuyerRoutes');
 const { CreateProduct, GetallProduct, GetSingleProduct, UpdateProduct, DeleteProduct } = require('./routes/ProductRoutes');
 const error = require('./middleware/error');
 const cookieParser = require("cookie-parser");
-const { CreateSeller, SignUpSeller, LoginSeller, DeleteSeller, AddProdRequest } = require('./routes/sellerRoutes');
-const { CreateAdmin, LoginAdmin, ApproveSeller, RejectSeller, AddProduct, GetAllSellerRequest, GetAllProdRequest } = require('./routes/AdminRoutes');
+const { CreateSeller, SignUpSeller, LoginSeller, DeleteSeller, AddProdRequest ,Sellerquote ,Getsingleseller} = require('./routes/sellerRoutes');
+const { CreateAdmin, LoginAdmin, ApproveSeller, RejectSeller, AddProduct, GetAllSellerRequest, GetAllProdRequest , Rejectorder, Adminclickprocess, Sendrfqadmin, Adminupdateprice } = require('./routes/AdminRoutes');
 const { CreateOrder, GetAllOrder, GetSingleOrder, AdminUpdates, BuyerUpdates, SellerUpdates, GetAllQuotes, GetQuote } = require('./routes/OrderRoutes');
 
 
@@ -24,7 +25,7 @@ const io = new Server(server, {
   }
 })
 
-
+app.use(cors({credentials:true,origin:'http://localhost:3000'}))
 app.use(cookieParser())
 app.use(body.urlencoded({ extended: false }))
 app.use(body.json())
@@ -51,6 +52,8 @@ app.use(LoginBuyer)
 app.use(LogoutBuyer)
 app.use(UpdateBuyer)
 app.use(DeleteBuyer)
+app.use(GetBuyerBids)
+
 
 // seller's Routes
 app.use(CreateSeller)
@@ -58,6 +61,9 @@ app.use(SignUpSeller)
 app.use(LoginSeller)
 app.use(DeleteSeller)
 app.use(AddProdRequest)
+app.use(Getsingleseller)
+app.use(Sellerquote)
+
 
 
 // admin's routes
@@ -68,7 +74,10 @@ app.use(RejectSeller)
 app.use(AddProduct)
 app.use(GetAllSellerRequest)
 app.use(GetAllProdRequest)
-
+app.use(Rejectorder)
+app.use(Adminclickprocess)
+app.use(Sendrfqadmin)
+app.use(Adminupdateprice)
 
 // order routes
 app.use(CreateOrder)

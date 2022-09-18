@@ -1,5 +1,5 @@
 const express = require('express');
-const { createbuyer, getbuyers, getsinglebuyer, loginbuyer, logoutbuyer, Updatebuyer, deletebuyer } = require('../controller/BuyerController');
+const { createbuyer, getbuyers, getsinglebuyer, loginbuyer, logoutbuyer, Updatebuyer, deletebuyer, getallBuyerBids ,accpetquote } = require('../controller/BuyerController');
 const { isAutharization, autherizesrole, isAdmin } = require('../middleware/auth');
 
 
@@ -13,10 +13,12 @@ const LoginBuyer =  app.post('/login/buyer' , loginbuyer)
 const LogoutBuyer = app.get('/logout/buyer',logoutbuyer)
 const UpdateBuyer = app.put('/update/buyer',isAutharization,Updatebuyer)
 const DeleteBuyer =  app.delete('/buyer/:id', isAdmin ,autherizesrole('admin'),deletebuyer)
+const GetBuyerBids =  app.get('/getall/buyer/bids' , isAutharization , getallBuyerBids )
+const Accpetquote=app.put("/buyer/accpetquote/:id",isAutharization,accpetquote)
 
 
 
 
 
 
-module.exports = {newbuyer , GetBuyers , GetSingleBuyer , LoginBuyer , LogoutBuyer , UpdateBuyer , DeleteBuyer}
+module.exports = {newbuyer , GetBuyers , GetSingleBuyer , LoginBuyer , LogoutBuyer , UpdateBuyer , DeleteBuyer , GetBuyerBids , Accpetquote}

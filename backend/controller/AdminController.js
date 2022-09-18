@@ -135,3 +135,79 @@ exports.getalladdprodrequest = catchaysnc(async (req,res,next)=>{
 })
 
 
+
+// hiren
+// admin rejcted the order
+exports.adminrejectorder = catchaysnc(async (req, res, next) => {
+  const orderid = req.body.id;
+  const data = await OrderModel.findByIdAndUpdate(
+    orderid,
+    { quote_status: "rejected" },
+    { new: true }
+  );
+  await data.save();
+  res.status(200).json({
+    sucess: true,
+    data,
+  });
+});
+/// admin when click process
+
+exports.adminclickprocess = catchaysnc(async (req, res, next) => {
+  const orderid = req.params.id;
+  const order = await OrderModel.findById(orderid, {
+    product: 1,
+    _id: 0,
+  }).populate("product", { sellers: 1, _id: 0 });
+  res.status(200).json({
+    sucess: true,
+    order,
+  });
+});
+
+// admin when click sendrfq button
+
+exports.sendrfqadmin = catchaysnc(async (req, res, next) => {
+  const id = req.body.id;
+  const sellerdata = req.body.sellers;
+  console.log(sellerdata);
+  const updatestate = await OrderModel.findByIdAndUpdate(
+    id,
+    { quote_status: "active", bids: sellerdata },
+    { new: true }
+  );
+  let sellerid;
+  await updatestate.save();
+  const data = sellerdata.forEach(async (element) => {
+    sellerid = await SellerModel.findByIdAndUpdate(element.seller, {
+      $push: {
+        bids: id,
+      },
+    });
+  });
+
+  res.status(200).json({
+    sucess: true,
+    updatestate,
+    data,
+  });
+});
+
+/// when admin click the view details of particular object in admin panel
+
+// when admin update price of seller quote
+exports.adminupdateprice = catchaysnc(async (req, res, next) => {
+  const orderid = req.params.id; 
+  console.log(orderid)
+  const price = req.body.kimat;
+  console.log(price);
+  const data = await OrderModel.findByIdAndUpdate(orderid, {
+    buyer_Price: price,
+  });
+ 
+  res.status(200).json({
+    sucess: true,
+   data
+  })
+  
+});

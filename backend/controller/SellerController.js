@@ -172,4 +172,36 @@ exports.signuprequest = catchaysnc(async(req,res,next)=>{
 })
 
 
+// seller Qvotoes
+exports.sellerquote = catchaysnc(async (req, res, next) => {
+  let updateprice;
+
+  const sellerid = req.user._id;
+  const kimat = req.body.kimat;
+  console.log(kimat)
+  
+  const orderid = req.params.id;
+
+  const order = await OrderModel.findById(orderid);
+
+  const isfound = order.bids.find(
+    (seller) => seller.seller.toString() === sellerid.toString()
+  );
+
+  if (isfound) {
+    order.bids.forEach((object) => {
+      if (object.seller.toString() === sellerid.toString()) {
+        object.price = kimat
+      }
+    });
+  } else {
+    return next(new Errorhandler("seller bid not exist"));
+  }
+
+  await order.save();
+
+  res.status(200).json({
+    order,
+  });
+});
 

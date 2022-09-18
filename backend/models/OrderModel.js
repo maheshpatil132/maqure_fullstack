@@ -5,37 +5,27 @@ const OrderModel = mongoose.Schema({
    buyer: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'buyer',
-      required:true
-   },
+      required:true  
+   },     
    product: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'product',
       required:true
-   },
-   winner:[{
-      type: mongoose.SchemaTypes.ObjectId,
-      ref:'order.bid',
-      price:{
-         type:Number,
-      }
-   }],
+   },  
    quantity: {
       type: Number,
       required:true
    },
-   status: {
-      type: String,
-      default: 'processing'
-   },
    remark: {
       type: String,
-   },
-   documents: [
-      { type: String, }
-   ],
-   timer: {
-      type:Date
-   },
+   }, 
+   winner:[{
+      type: mongoose.SchemaTypes.ObjectId,
+      ref:'seller',
+      price:{
+         type:Number,
+      }
+   }],
    bids: [{
       seller: {
          type: mongoose.SchemaTypes.ObjectId,
@@ -43,21 +33,51 @@ const OrderModel = mongoose.Schema({
       },
       price: {
          type: Number,
+         default:null
       },
    }
    ],
-   finalPrice:{
-      type:Number,
-      default:0
+   quote_documents: [
+      { type: String, }
+   ],
+   timer: {
+      type:Date
    },
-   deal:{
-      type:Boolean,
-      default:null
+   buyer_Price:{
+      type:Number
    },
    negotation:{
       type:Boolean,
       default:false
    },
+   quote_status: {
+      type: String,
+      default: 'processing'
+   }, 
+   seller_invoice: {
+      type: String,
+     
+   },
+   buyer_invoice :{
+      type: String,
+
+   },
+   buyer_payment : {
+      type: Boolean,
+      default: false
+   },
+   seller_payment : {
+      type: Boolean,
+      default: false
+   },
+   order_status: {
+      type: String,
+      default: "preparing"
+   },
+   query: {
+      type: String
+   },
+
    createdAt: {
       type: Date,
       default: Date.now,

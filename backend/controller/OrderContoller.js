@@ -1,6 +1,8 @@
 const { default: mongoose } = require("mongoose");
 const { catchaysnc } = require("../middleware/catchaysnc");
 const db = require("../models/OrderModel");
+const BuyerModel = require("../models/BuyerModel");
+
 const Errorhandler = require("../utils/errorhandler");
 
 
@@ -14,9 +16,21 @@ exports.createorder = catchaysnc(async (req, res, next) => {
     }
     const order = new db({ ...data })
     await order.save()
+
+    const buyer = await BuyerModel.findByIdAndUpdate(req.user._id , {$push:{
+        bids : order._id
+    }})
+
+    if(!buyer){
+        return next(new Errorhandler("buyer not found", 404))
+    }
+   
+    await buyer.save()
+
     res.status(200).json({
         success: true,
-        message: 'your order is created'
+        message: 'your order is created',
+        buyer
     })
 })
 

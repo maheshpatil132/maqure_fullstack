@@ -109,3 +109,37 @@ exports.deletebuyer = catchaysnc(async(req,res,next)=>{
 })
 
 
+exports.getallBuyerBids = catchaysnc(async(req,res,next)=>{
+ 
+  const buyerbids = await db.findById(req.user._id, { bids:1 } ).populate('bids')
+
+  if(!buyerbids){
+    return next(new Errorhandler('something went wrong please try to login',404))
+  }
+
+  res.status(200).json({
+   success:true,
+   buyerbids
+  })
+
+})
+
+
+// hiren
+
+// buyer click accept bid
+exports.accpetquote = catchaysnc(async(req,res,next)=>{
+  const orderid=req.params.id;
+
+  const data = await OrderModel.findByIdAndUpdate(
+    orderid,
+    { quote_status: "accepted" },
+    { new: true }
+  );
+  await data.save();
+  res.status(200).json({
+    sucess: true,
+    data,
+  });
+})
+
