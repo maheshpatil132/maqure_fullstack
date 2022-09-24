@@ -20,8 +20,10 @@ const OrderModel = mongoose.Schema({
       type: String,
    }, 
    winner:[{
-      type: mongoose.SchemaTypes.ObjectId,
-      ref:'seller',
+      seller:{
+         type: mongoose.SchemaTypes.ObjectId,
+         ref:'seller',
+      },
       price:{
          type:Number,
       }
@@ -44,7 +46,9 @@ const OrderModel = mongoose.Schema({
       type:Date
    },
    buyer_Price:{
-      type:Number
+      type:Number,
+      default:000
+
    },
    negotation:{
       type:Boolean,

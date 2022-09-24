@@ -15,7 +15,7 @@ exports.createorder = catchaysnc(async (req, res, next) => {
         quantity
     }
     const order = new db({ ...data })
-    await order.save()
+   
 
     const buyer = await BuyerModel.findByIdAndUpdate(req.user._id , {$push:{
         bids : order._id
@@ -24,7 +24,8 @@ exports.createorder = catchaysnc(async (req, res, next) => {
     if(!buyer){
         return next(new Errorhandler("buyer not found", 404))
     }
-   
+     
+    await order.save()
     await buyer.save()
 
     res.status(200).json({
@@ -39,7 +40,8 @@ exports.createorder = catchaysnc(async (req, res, next) => {
 // 1. update status / finalprice  == admin
 exports.adminupdates = catchaysnc(async (req, res, next) => {
 
-    const order = await db.findByIdAndUpdate(req.body.id, { ...req.body }, { new: true })
+    const order = await db.findByIdAndUpdate(req.body.id, { ...req.body }, { new: true }).populate('product',{name:1,_id:1}).populate('bids.seller',{name:1})
+
 
     if (!order) {
         return next(new Errorhandler('order not found', 404))
@@ -111,7 +113,7 @@ exports.sellerupdates = catchaysnc(async (req, res, next) => {
 
 // get all order
 exports.getallorders = catchaysnc(async (req, res, next) => {
-    const orders = await db.find({})
+    const orders = await db.find({}).populate('product',{name:1,_id:1})
     res.status(200).json({
         success: true,
         orders
@@ -120,7 +122,7 @@ exports.getallorders = catchaysnc(async (req, res, next) => {
 
 // get single order
 exports.getsingleorder = catchaysnc(async (req, res, next) => {
-    const order = await db.findById(req.params.id)
+    const order = await db.findById(req.params.id).populate('product',{name:1,_id:1}).populate('bids.seller',{name:1})
 
     if (!order) {
         return next(new Errorhandler("order not found", 404))
@@ -167,16 +169,20 @@ exports.getquote = catchaysnc(async (req, res, next) => {
 
 // admin have selected
 exports.addminaccepted = catchaysnc(async(req,res,next)=>{
-  const { sellerId , finalprice}= req.body
-  const order = await db.findByIdAndUpdate(id,{winner:{
-    seller:sellerId,
-    price:finalprice
-  }, status:'in transit'})
-  await order.save()
+  const arr = [{
+    seller:req.body.seller,
+    price:req.body.price
+  }]
+
+  const order = await db.findByIdAndUpdate(req.params.id,{$set:{
+   winner:arr
+  }} , {new:true})
 
   if(!order){
     return next(new Errorhandler('order not exist',404))
   }
+ 
+ await order.save()
 
   res.status(200).json({
     success:true,
@@ -184,10 +190,7 @@ exports.addminaccepted = catchaysnc(async(req,res,next)=>{
   })
 })
 
-//buyer accept order
-exports.buyeracceptorder = catchaysnc(async(req,res,next)=>{
-  const { orderId , finalprice , } = req.body
-})
+
 
 
 // reject / delete quoate

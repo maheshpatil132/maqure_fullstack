@@ -205,3 +205,20 @@ exports.sellerquote = catchaysnc(async (req, res, next) => {
   });
 });
 
+
+exports.getallsellerquote = catchaysnc(async (req, res, next) => {
+  const quotes = await db
+    .findById(req.user._id, { bids: 1 })
+    .populate('bids')
+    .populate('bids.product')
+  const sellerid = req.user._id
+  if (!quotes) {
+    return next(new Errorhandler('bids not exist', 404))
+  }
+  const bids = await quotes.bids
+  res.status(200).json({
+    success: true,
+    bids,
+    sellerid,
+  })
+})

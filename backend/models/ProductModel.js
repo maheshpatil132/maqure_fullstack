@@ -13,7 +13,10 @@ const Products = new Schema({
     documents: {
         type: String,
     },    
-    sellers : [],
+    sellers : [{
+        type:mongoose.SchemaTypes.ObjectId,
+        ref:'seller'
+    }],
     img:{
         
     },

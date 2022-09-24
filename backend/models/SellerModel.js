@@ -39,6 +39,12 @@ const SellerModel = mongoose.Schema({
                 default:null
             }
         }
+    ],
+    bids: [
+      {
+        type:mongoose.SchemaTypes.ObjectId,
+        ref:'order'
+      }
     ]
 
 })
@@ -53,7 +59,7 @@ SellerModel.pre('save', async function (next) {
   
   // generate the token
   SellerModel.methods.generateToken = function () {
-    const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY)
+    const token = jwt.sign({ id: this._id , role:this.role}, process.env.JWT_SECRET_KEY)
     return token
   }
   

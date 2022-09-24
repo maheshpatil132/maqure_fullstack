@@ -1,6 +1,6 @@
 const express = require('express');
-const { createbuyer, getbuyers, getsinglebuyer, loginbuyer, logoutbuyer, Updatebuyer, deletebuyer, getallBuyerBids ,accpetquote } = require('../controller/BuyerController');
-const { isAutharization, autherizesrole, isAdmin } = require('../middleware/auth');
+const { createbuyer, getbuyers, getsinglebuyer, loginbuyer, logoutbuyer, Updatebuyer, deletebuyer, getallBuyerBids ,accpetquote, autologin } = require('../controller/BuyerController');
+const { isAutharization, autherizesrole, isAdmin, isOurUser } = require('../middleware/auth');
 
 
 const app = express.Router()
@@ -15,10 +15,11 @@ const UpdateBuyer = app.put('/update/buyer',isAutharization,Updatebuyer)
 const DeleteBuyer =  app.delete('/buyer/:id', isAdmin ,autherizesrole('admin'),deletebuyer)
 const GetBuyerBids =  app.get('/getall/buyer/bids' , isAutharization , getallBuyerBids )
 const Accpetquote=app.put("/buyer/accpetquote/:id",isAutharization,accpetquote)
+const AutoLogin = app.get('/auto/login', isOurUser , autologin)
 
 
 
 
 
 
-module.exports = {newbuyer , GetBuyers , GetSingleBuyer , LoginBuyer , LogoutBuyer , UpdateBuyer , DeleteBuyer , GetBuyerBids , Accpetquote}
+module.exports = {newbuyer , GetBuyers , GetSingleBuyer , LoginBuyer , LogoutBuyer , UpdateBuyer , DeleteBuyer , GetBuyerBids , Accpetquote,AutoLogin}

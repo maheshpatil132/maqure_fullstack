@@ -5,13 +5,13 @@ const http = require('http');
 const cors = require('cors')
 const { Server } = require('socket.io')
 const connectDatabase = require('./configure/database');
-const { newbuyer, GetBuyers, GetSingleBuyer, LoginBuyer, LogoutBuyer, UpdateBuyer, DeleteBuyer, GetBuyerBids } = require('./routes/BuyerRoutes');
+const { newbuyer, GetBuyers, GetSingleBuyer, LoginBuyer, LogoutBuyer, UpdateBuyer, DeleteBuyer, GetBuyerBids, AutoLogin } = require('./routes/BuyerRoutes');
 const { CreateProduct, GetallProduct, GetSingleProduct, UpdateProduct, DeleteProduct } = require('./routes/ProductRoutes');
 const error = require('./middleware/error');
 const cookieParser = require("cookie-parser");
-const { CreateSeller, SignUpSeller, LoginSeller, DeleteSeller, AddProdRequest ,Sellerquote ,Getsingleseller} = require('./routes/sellerRoutes');
+const { CreateSeller, SignUpSeller, LoginSeller, DeleteSeller, AddProdRequest ,Sellerquote ,Getsingleseller, Getallsellerquote} = require('./routes/sellerRoutes');
 const { CreateAdmin, LoginAdmin, ApproveSeller, RejectSeller, AddProduct, GetAllSellerRequest, GetAllProdRequest , Rejectorder, Adminclickprocess, Sendrfqadmin, Adminupdateprice } = require('./routes/AdminRoutes');
-const { CreateOrder, GetAllOrder, GetSingleOrder, AdminUpdates, BuyerUpdates, SellerUpdates, GetAllQuotes, GetQuote } = require('./routes/OrderRoutes');
+const { CreateOrder, GetAllOrder, GetSingleOrder, AdminUpdates, BuyerUpdates, SellerUpdates, GetAllQuotes, GetQuote, AdminAccepted } = require('./routes/OrderRoutes');
 
 
 
@@ -53,6 +53,7 @@ app.use(LogoutBuyer)
 app.use(UpdateBuyer)
 app.use(DeleteBuyer)
 app.use(GetBuyerBids)
+app.use(AutoLogin)
 
 
 // seller's Routes
@@ -63,6 +64,7 @@ app.use(DeleteSeller)
 app.use(AddProdRequest)
 app.use(Getsingleseller)
 app.use(Sellerquote)
+app.use(Getallsellerquote)
 
 
 
@@ -88,6 +90,7 @@ app.use(BuyerUpdates)
 app.use(SellerUpdates)
 app.use(GetAllQuotes)
 app.use(GetQuote)
+app.use(AdminAccepted)
 
 
 app.use(error)

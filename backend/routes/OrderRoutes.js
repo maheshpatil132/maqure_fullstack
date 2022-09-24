@@ -1,5 +1,5 @@
 const express = require('express');
-const { createorder, getallorders, getsingleorder, adminupdates, buyerupdates, sellerupdates, getallquoate, getquote } = require('../controller/OrderContoller');
+const { createorder, getallorders, getsingleorder, adminupdates, buyerupdates, sellerupdates, getallquoate, getquote, addminaccepted } = require('../controller/OrderContoller');
 const { isAutharization, isAdmin, isSeller, autherizesrole } = require('../middleware/auth');
 
 const app = express.Router()
@@ -16,8 +16,9 @@ const BuyerUpdates = app.put('/updates/order/buyer',  isAutharization , buyerupd
 const SellerUpdates = app.put('/updates/order/seller', isSeller , sellerupdates)
 const GetAllQuotes = app.get('/:id/quotes', isAdmin , getallquoate )
 const GetQuote = app.get('/:order/:id', isAdmin , getquote )
+const AdminAccepted = app.put('/admin/accept/:id',isAdmin,addminaccepted)
 
 
 
 
-module.exports = { CreateOrder , GetAllOrder , GetSingleOrder , AdminUpdates , SellerUpdates , BuyerUpdates , GetAllQuotes , GetQuote}
+module.exports = { CreateOrder , GetAllOrder , GetSingleOrder , AdminUpdates , SellerUpdates , BuyerUpdates , GetAllQuotes , GetQuote , AdminAccepted}

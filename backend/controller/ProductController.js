@@ -16,7 +16,7 @@ exports.createproduct = catchaysnc(async(req,res,next)=>{
 
 // get all
 exports.getallproduct = catchaysnc(async(req,res,next)=>{
-    const products = await db.find()
+    const products = await db.find().populate('sellers',{_id:0,name:1})
     res.json({
         sucess:true,
         products
@@ -28,8 +28,7 @@ exports.getallproduct = catchaysnc(async(req,res,next)=>{
 // single product
 exports.getsingleproduct = catchaysnc(async(req,res,next)=>{
     const {id} = req.params
-    console.log(id)
-    const product = await db.findById({_id:id})
+    const product = await db.findById({_id:id}).populate('sellers',{name:1})
     if(!product){
        return next(new Errorhandler('product found',404))
     }

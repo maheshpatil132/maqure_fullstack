@@ -3,6 +3,7 @@ const { catchaysnc } = require("../middleware/catchaysnc");
 const db = require("../models/BuyerModel");
 const Errorhandler = require("../utils/errorhandler");
 const sendtoken = require("../utils/jwttoken");
+const OrderModel = require("../models/OrderModel");
 
 
 exports.createbuyer = catchaysnc(async(req,res,next)=>{
@@ -136,6 +137,9 @@ exports.accpetquote = catchaysnc(async(req,res,next)=>{
     { quote_status: "accepted" },
     { new: true }
   );
+  if(!data){
+    return next(new Errorhandler('order is not find',404))
+  }
   await data.save();
   res.status(200).json({
     sucess: true,
@@ -143,3 +147,12 @@ exports.accpetquote = catchaysnc(async(req,res,next)=>{
   });
 })
 
+
+// common route for auto login
+exports.autologin = catchaysnc(async(req,res,next)=>{
+  const user = req.user
+  res.status(200).json({
+    success:true,
+    user
+  })
+})

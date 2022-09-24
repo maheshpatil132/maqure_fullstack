@@ -4,6 +4,8 @@ const ProductModel = require("../models/ProductModel");
 const SellerModel = require("../models/SellerModel");
 const Errorhandler = require("../utils/errorhandler");
 const sendtoken = require("../utils/jwttoken");
+const OrderModel = require("../models/OrderModel");
+
 
 // create admin
 exports.createadmin = catchaysnc(async(req,res,next)=>{
@@ -86,9 +88,6 @@ exports.rejectseller = catchaysnc(async(req,res,next)=>{
 // add product
 exports.addproduct = catchaysnc(async(req,res,next)=>{
 
-
-  
-
   const addreq = req.body
   const user = await SellerModel.findById(addreq.seller)
   const products = await ProductModel.findById(addreq.product)
@@ -170,26 +169,41 @@ exports.adminclickprocess = catchaysnc(async (req, res, next) => {
 exports.sendrfqadmin = catchaysnc(async (req, res, next) => {
   const id = req.body.id;
   const sellerdata = req.body.sellers;
-  console.log(sellerdata);
+  const sellersId = sellerdata.map(e=> e.seller)
+  let seller;
+
+  // console.log(sellerdata);
   const updatestate = await OrderModel.findByIdAndUpdate(
     id,
     { quote_status: "active", bids: sellerdata },
     { new: true }
   );
-  let sellerid;
-  await updatestate.save();
-  const data = sellerdata.forEach(async (element) => {
-    sellerid = await SellerModel.findByIdAndUpdate(element.seller, {
-      $push: {
+
+  if(!updatestate){
+    return next(new Errorhandler('order not Exist',404))
+  }
+  
+
+  const sellers = await SellerModel.updateMany({_id: { $in : sellersId}}, {
+    $push: {
+      bids: id,
+    },
+  })
+
+  if(!sellers){
+    await SellerModel.updateMany({_id: { $in : sellersId}}, {
+      $pull: {
         bids: id,
       },
-    });
-  });
+    })
+  }
+
+  
+  await updatestate.save();
 
   res.status(200).json({
     sucess: true,
-    updatestate,
-    data,
+    updatestate
   });
 });
 
@@ -198,13 +212,12 @@ exports.sendrfqadmin = catchaysnc(async (req, res, next) => {
 // when admin update price of seller quote
 exports.adminupdateprice = catchaysnc(async (req, res, next) => {
   const orderid = req.params.id; 
-  console.log(orderid)
   const price = req.body.kimat;
-  console.log(price);
   const data = await OrderModel.findByIdAndUpdate(orderid, {
     buyer_Price: price,
   });
- 
+  
+ await data.save()
   res.status(200).json({
     sucess: true,
    data
